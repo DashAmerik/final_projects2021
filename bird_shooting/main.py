@@ -191,7 +191,7 @@ while True:
 			if event.key == pygame.K_SPACE:
 				cannon.bullets -= 1
 
- bn 
+
 				if key_release==0:
 					when_pressed = frame
 					key_release = 1
@@ -246,3 +246,6 @@ while True:
 		bar_gp.draw(gameDisplay)
 
 	pygame.display.update()
+
+
+#finish while true
