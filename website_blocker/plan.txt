@@ -1,0 +1,28 @@
+
+
+
+read websites that are already blocked
+
+get user input (decide what page will be blocked)
+
+open hosts in Windows
+
+write in the users input website
+
+
+
+user gives website
+open file (sublime)c:\windows\system32\drivers\etc\hosts
+
+write in:
+  127.0.0.0     site that is needed to be blocked
+close file
+
+read websites that are already blocked
+
+
+words = 'i like dogs'
+words.split(' ')
+words = ['i','like','dogd']
+if 'i' in words:
+  words.remove('i')

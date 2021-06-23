@@ -1,0 +1,22 @@
+Objects:
+  planets [size, speed, appearance]
+  spaceship [appearance]
+  background [always the same]
+  bullets [speed, spawn_position]
+  explosion [stages, spawn_position]
+
+Function:
+  planets: movement from top of screen to bottom, movement in direction of spaceship
+  spaceship: following mouse, spawn position of bullets when button get_pressed
+  bullets: move upwards from spaceship's current pos, destroy planets when collision
+  explosion: when collision[bullet, planet] on pos of planet, planet destroyed // animation begins
+
+
+to do:
+-initial pygame setup + background
+-spacesip class
+-planets
+-bullets
+-score
+-explosion
+-end screen

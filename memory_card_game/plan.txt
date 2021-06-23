@@ -1,0 +1,27 @@
+plan for memory game
+
+objects:
+cards
+
+
+
+to do:
+Background
+cards in position  (3x3)
+edit pictures
+picture gen in random position
+mouse click
+card animation
+ title screen, menu
+ end game
+
+
+-one list of card images
+title screen:
+-name of the game
+-high score
+-button QUIT
+-button start
+  -option 3x4 button
+  -option 4x4 button
+  -option 5x4 button

@@ -1,0 +1,25 @@
+-BIRD SHOOTING GAME PLAN-
+*if finished then might make levels aka easy = trajectory / medium = no trajectory / hard = no trajectory + birds fly back
+
+
+import photo of shooter, bird, bullet and clouds
+put in background and moving clouds
+position of shooter, spawn point of birds
+
+birds spawn at random time intervals which can be shortened to up the difficulty
+direction birds fly in / speed / if and when they turn around to fly back
+
+point cannon up/down using w/s or up/down keys
+shoot with spacebar
+
+add gravity to flying bullets
+how long you hold the space bar regulates the strength of the bullet
+trajectory of shooting bullet
+when bird shot change to dead sprite and have it fall with gravity
+
+add sound effects to bullets flying out of gun, to bullets hitting bird (and it dying) and flapping/chirping sound effects if there is a bird on screen
+regulate volume so that flaps/chirps of birds is quieter and more background noise
+
+success of player is measured by how many birds were killed / total number of birds.
+
+-----------
