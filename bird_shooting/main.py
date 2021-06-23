@@ -246,6 +246,3 @@ while True:
 		bar_gp.draw(gameDisplay)
 
 	pygame.display.update()
-
-
-#finish while true
