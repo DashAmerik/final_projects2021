@@ -47,11 +47,23 @@ class Bar(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = SCREEN_WIDTH - self.size[0]
 		self.rect.y = SCREEN_HEIGHT - self.size[1]
+		self.timer_start = None
 
 
-#	def update(self):
-		#measure time
-#		self.image = pygame.image.load("images\\loadingbar\\loadingbar"+str(self.costume+".png"))
+	def update(self, timer_start, reset):
+		if type(self.timer_start) is int:
+			if timer_start != 0:
+				self.timer_start = timer_start
+			nowtime = pygame.time.get_ticks()
+			if nowtime - self.timer_start > 50:
+				self.costume += 1
+				print("spacebar pressed")
+			self.image = pygame.image.load("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
+			self.image = pygame.transform.scale(self.image, (int(self.size[0]),int(self.size[1])))
+			print("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
+			timer_start = nowtime
+			if reset == True:
+				self.costume = 0
 
 
 class Cannon(pygame.sprite.Sprite):
@@ -190,8 +202,8 @@ while True:
 				angle -= 2
 			if event.key == pygame.K_SPACE:
 				cannon.bullets -= 1
-
-
+				loadingbar_countdown_start = pygame.time.get_ticks() #starting timer for power loading bar
+				bar_gp.update(loadingbar_countdown_start,False)
 				if key_release==0:
 					when_pressed = frame
 					key_release = 1
@@ -202,6 +214,8 @@ while True:
 				key_release = 0
 				when_released = frame
 				frames_passed = when_released - when_pressed
+				bar_gp.update(loadingbar_countdown_start,True)
+
 
 			#	if frames_passed > 100:
 			#		angle = 0
@@ -237,6 +251,7 @@ while True:
 		birds_gp.update()
 		core_gp.update()
 		cannon_gp.update(1, False)
+		bar_gp.update(0,False)
 		drawtext('score: '+str(cannon.score), 50, SCREEN_HEIGHT - 50, red, 30)
 		drawtext('bullets left: '+str(cannon.bullets), 200, SCREEN_HEIGHT - 50, red, 30)
 		clouds_gp.draw(gameDisplay)
