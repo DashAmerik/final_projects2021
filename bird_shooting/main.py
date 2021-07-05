@@ -65,6 +65,8 @@ class Bar(pygame.sprite.Sprite):
 			if reset == True:
 				self.costume = 0
 
+#class Reload(pygame.sprite.Sprite):
+#	def __init__(self)
 
 class Cannon(pygame.sprite.Sprite):
 	def __init__(self):
