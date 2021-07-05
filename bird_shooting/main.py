@@ -47,23 +47,26 @@ class Bar(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = SCREEN_WIDTH - self.size[0]
 		self.rect.y = SCREEN_HEIGHT - self.size[1]
-		self.timer_start = None
+		self.timer_start = -2
 
 
 	def update(self, timer_start, reset):
-		if type(self.timer_start) is int:
+		print(self.timer_start)
+		if timer_start > -1:
 			if timer_start != 0:
 				self.timer_start = timer_start
 			nowtime = pygame.time.get_ticks()
-			if nowtime - self.timer_start > 50:
+			if nowtime - self.timer_start > 50 and self.costume < 4 and self.timer_start!=-2:
 				self.costume += 1
+
 				print("spacebar pressed")
 			self.image = pygame.image.load("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
 			self.image = pygame.transform.scale(self.image, (int(self.size[0]),int(self.size[1])))
 			print("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
-			timer_start = nowtime
+			self.timer_start = nowtime
 			if reset == True:
 				self.costume = 0
+				self.timer_start = -2
 
 #class Reload(pygame.sprite.Sprite):
 #	def __init__(self)
@@ -216,7 +219,7 @@ while True:
 				key_release = 0
 				when_released = frame
 				frames_passed = when_released - when_pressed
-				bar_gp.update(loadingbar_countdown_start,True)
+				bar_gp.update(0,True)
 
 
 			#	if frames_passed > 100:
