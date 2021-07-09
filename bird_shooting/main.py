@@ -68,8 +68,29 @@ class Bar(pygame.sprite.Sprite):
 				self.costume = 0
 				self.timer_start = -2
 
-#class Reload(pygame.sprite.Sprite):
-#	def __init__(self)
+class Reload(pygame.sprite.Sprite):
+	def __init__(self):
+		pygame.sprite.Sprite.__init__(self)
+		self.image = pygame.Surface([640,480], pygame.SRCALPHA, 32)
+		self.image = self.image.convert_alpha()
+		self.image2 = pygame.image.load("images\\reload.png")
+		self.size = self.image.get_rect().size
+		self.image2 = pygame.transform.scale(self.image2, (int(self.size[0]*0.05),int(self.size[1]*0.05)))
+		self.rect = self.image.get_rect()
+	#	self.rect.x = SCREEN_WIDTH - 55
+	#	self.rect.y = SCREEN_HEIGHT/2 + 150
+		self.rect.x = SCREEN_WIDTH/2
+		self.rect.y = SCREEN_HEIGHT/2
+		self.angle = 1
+
+	def update(self):
+		self.image.blit(self.image2,(0,0))
+		self.angle+=1
+		self.old_centr = self.rect.center
+		self.image = pygame.transform.rotate(self.image, self.angle)
+		self.rect = self.image.get_rect()
+		self.rect.center = self.old_centr
+		#pygame.display.flip()
 
 class Cannon(pygame.sprite.Sprite):
 	def __init__(self):
@@ -79,7 +100,7 @@ class Cannon(pygame.sprite.Sprite):
 		self.costume = 0
 		self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.7),int(self.size[1]*0.7)))
 		self.rect = self.image.get_rect()
-		self.rect.x = SCREEN_WIDTH - 125
+		self.rect.x = SCREEN_WIDTH - 125x
 		self.rect.y = SCREEN_HEIGHT/2 + 40
 		self.angle = 0
 		self.image = pygame.transform.rotate(self.image, self.angle)
@@ -183,6 +204,9 @@ cannon_gp = pygame.sprite.Group()
 birds_gp = pygame.sprite.Group()
 core_gp = pygame.sprite.Group()
 bar_gp = pygame.sprite.Group()
+reload_gp = pygame.sprite.Group()
+reload = Reload()
+reload_gp.add(reload)
 cannon = Cannon()
 cannon_gp.add(cannon)
 key_release = 0
@@ -256,13 +280,15 @@ while True:
 		birds_gp.update()
 		core_gp.update()
 		cannon_gp.update(1, False)
-		bar_gp.update(0,False)
+		#bar_gp.update(0,False)
+		reload.update()
 		drawtext('score: '+str(cannon.score), 50, SCREEN_HEIGHT - 50, red, 30)
 		drawtext('bullets left: '+str(cannon.bullets), 200, SCREEN_HEIGHT - 50, red, 30)
 		clouds_gp.draw(gameDisplay)
 		core_gp.draw(gameDisplay)
 		cannon_gp.draw(gameDisplay)
 		birds_gp.draw(gameDisplay)
-		bar_gp.draw(gameDisplay)
+		#bar_gp.draw(gameDisplay)
+		reload_gp.draw(gameDisplay)
 
 	pygame.display.update()
