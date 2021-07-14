@@ -292,3 +292,6 @@ while True:
 		reload_gp.draw(gameDisplay)
 
 	pygame.display.update()
+
+	https://www.remove.bg/
+https://ezgif.com/split
