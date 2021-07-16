@@ -71,25 +71,32 @@ class Bar(pygame.sprite.Sprite):
 class Reload(pygame.sprite.Sprite):
 	def __init__(self):
 		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.Surface([640,480], pygame.SRCALPHA, 32)
-		self.image = self.image.convert_alpha()
-		self.image2 = pygame.image.load("images\\reload.png")
+		self.image = pygame.image.load("images\\reload\\reload0.png")
+		self.costume = 0
 		self.size = self.image.get_rect().size
-		self.image2 = pygame.transform.scale(self.image2, (int(self.size[0]*0.05),int(self.size[1]*0.05)))
+		self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.001),int(self.size[1]*0.001)))
 		self.rect = self.image.get_rect()
-	#	self.rect.x = SCREEN_WIDTH - 55
-	#	self.rect.y = SCREEN_HEIGHT/2 + 150
-		self.rect.x = SCREEN_WIDTH/2
-		self.rect.y = SCREEN_HEIGHT/2
+		self.rect.x = SCREEN_WIDTH - 55
+		self.rect.y = SCREEN_HEIGHT/2 + 150
+	#	self.rect.x = SCREEN_WIDTH/2
+	#	self.rect.y = SCREEN_HEIGHT/2
 		self.angle = 1
+		self.frames = 0
 
 	def update(self):
-		self.image.blit(self.image2,(0,0))
-		self.angle+=1
-		self.old_centr = self.rect.center
-		self.image = pygame.transform.rotate(self.image, self.angle)
-		self.rect = self.image.get_rect()
-		self.rect.center = self.old_centr
+		cannon.shoot_ability = False
+		self.frames += 1
+		if self.frames < 80:
+			self.image = pygame.image.load("images\\reload\\reload"+str(self.costume)+".png")
+			self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.05),int(self.size[1]*0.05)))
+			print(self.costume)
+			if self.costume < 11:
+				self.costume += 1
+			else:
+				self.costume = 0
+		else:
+			cannon.shoot_ability = True
+			self.kill()
 		#pygame.display.flip()
 
 class Cannon(pygame.sprite.Sprite):
@@ -100,7 +107,7 @@ class Cannon(pygame.sprite.Sprite):
 		self.costume = 0
 		self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.7),int(self.size[1]*0.7)))
 		self.rect = self.image.get_rect()
-		self.rect.x = SCREEN_WIDTH - 125x
+		self.rect.x = SCREEN_WIDTH - 125
 		self.rect.y = SCREEN_HEIGHT/2 + 40
 		self.angle = 0
 		self.image = pygame.transform.rotate(self.image, self.angle)
@@ -108,8 +115,10 @@ class Cannon(pygame.sprite.Sprite):
 		self.score = 0
 		self.start_animation = False
 		self.time1 = pygame.time.get_ticks()
+		self.shoot_ability = True
 
 	def update(self, multiplier, change_angle):
+
 		if change_angle == True:
 			self.angle += 5 * multiplier
 		if self.start_animation == True:
@@ -205,8 +214,7 @@ birds_gp = pygame.sprite.Group()
 core_gp = pygame.sprite.Group()
 bar_gp = pygame.sprite.Group()
 reload_gp = pygame.sprite.Group()
-reload = Reload()
-reload_gp.add(reload)
+
 cannon = Cannon()
 cannon_gp.add(cannon)
 key_release = 0
@@ -230,7 +238,8 @@ while True:
 				cannon.update(1, True)
 				angle -= 2
 			if event.key == pygame.K_SPACE:
-				cannon.bullets -= 1
+
+
 				loadingbar_countdown_start = pygame.time.get_ticks() #starting timer for power loading bar
 				bar_gp.update(loadingbar_countdown_start,False)
 				if key_release==0:
@@ -244,19 +253,16 @@ while True:
 				when_released = frame
 				frames_passed = when_released - when_pressed
 				bar_gp.update(0,True)
-
-
-			#	if frames_passed > 100:
-			#		angle = 0
-			#	else:
-			#		angle = -50
-
 				gravity_strength = (frames_passed/3) *-1
 				#for every 30 frame:
 				#	gravity_strength += increase
-				core = Core(gravity_strength, angle)
-				core_gp.add(core)
-				cannon.start_animation = True
+				if cannon.shoot_ability == True:
+					reload = Reload()
+					reload_gp.add(reload)
+					cannon.bullets -= 1
+					core = Core(gravity_strength, angle)
+					core_gp.add(core)
+					cannon.start_animation = True
 
 	gen = random.randint(1,1000)
 	if gen < 3:
@@ -279,9 +285,10 @@ while True:
 		clouds_gp.update()
 		birds_gp.update()
 		core_gp.update()
+		reload_gp.update()
 		cannon_gp.update(1, False)
 		#bar_gp.update(0,False)
-		reload.update()
+
 		drawtext('score: '+str(cannon.score), 50, SCREEN_HEIGHT - 50, red, 30)
 		drawtext('bullets left: '+str(cannon.bullets), 200, SCREEN_HEIGHT - 50, red, 30)
 		clouds_gp.draw(gameDisplay)
@@ -293,5 +300,5 @@ while True:
 
 	pygame.display.update()
 
-	https://www.remove.bg/
-https://ezgif.com/split
+#	https://www.remove.bg/
+#https://ezgif.com/split
