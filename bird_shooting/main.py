@@ -1,24 +1,42 @@
 import pygame, random, time
+import win32com.client as wincl
+
 
 pygame.init()
+pygame.mixer.init()
+clock = pygame.time.Clock()
+
+
+
+cannon_sound = pygame.mixer.Sound('sounds\\Heavy Cannon Fire Sound Effect.mp3')
+cannon_sound.set_volume(0.1)
+pygame.mixer.music.load('sounds\\Bird Singing Sound Effect.mp3')
+pygame.mixer.music.set_volume(0.1)
+splat_sound = pygame.mixer.Sound('sounds\\Splat Sound.mp3')
+splat_sound.set_volume(0.1)
+
 red = (255,0,0)
 black = (0,0,0)
 green = (0,255,0)
 white = (255,255,255)
+
 SCREEN_WIDTH = int(626*1.5)
 SCREEN_HEIGHT = int(375*1.5)
-
+say = True
 angle = 0
 FPS = 100
-clock = pygame.time.Clock()
+
 gameDisplay = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 background = pygame.image.load("images\\bg.png")
 background = pygame.transform.scale(background,(int(626*1.5),int(375*1.5)))
+
 
 def drawtext(text, x, y, color, size):
 	myfont = pygame.font.SysFont('Comic Sans MS', size)
 	textsurface = myfont.render(text,False, color)
 	gameDisplay.blit(textsurface,(x, y))
+
+
 
 class Clouds(pygame.sprite.Sprite):
 	def __init__(self):
@@ -31,42 +49,13 @@ class Clouds(pygame.sprite.Sprite):
 		self.rect.y = 50
 		pygame.sprite.spritecollide(self,clouds_gp,True, collided = None)
 
+
 	def update(self):
 		self.rect.x += 1
 		if self.rect.x > SCREEN_WIDTH + 100:
 			self.kill()
 
-class Bar(pygame.sprite.Sprite):
-	def __init__(self):
-		pygame.sprite.Sprite.__init__(self)
-		self.image = pygame.image.load("images\\loadingbar\\loadingbar0.png")
-		self.costume = 0
-		self.size = self.image.get_rect().size
-		self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.5),int(self.size[1]*0.5)))
-		self.size = self.image.get_rect().size
-		self.rect = self.image.get_rect()
-		self.rect.x = SCREEN_WIDTH - self.size[0]
-		self.rect.y = SCREEN_HEIGHT - self.size[1]
-		self.timer_start = -2
 
-
-	def update(self, timer_start, reset):
-		print(self.timer_start)
-		if timer_start > -1:
-			if timer_start != 0:
-				self.timer_start = timer_start
-			nowtime = pygame.time.get_ticks()
-			if nowtime - self.timer_start > 50 and self.costume < 4 and self.timer_start!=-2:
-				self.costume += 1
-
-				print("spacebar pressed")
-			self.image = pygame.image.load("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
-			self.image = pygame.transform.scale(self.image, (int(self.size[0]),int(self.size[1])))
-			print("images\\loadingbar\\loadingbar"+str(self.costume)+".png")
-			self.timer_start = nowtime
-			if reset == True:
-				self.costume = 0
-				self.timer_start = -2
 
 class Reload(pygame.sprite.Sprite):
 	def __init__(self):
@@ -78,18 +67,16 @@ class Reload(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.x = SCREEN_WIDTH - 55
 		self.rect.y = SCREEN_HEIGHT/2 + 150
-	#	self.rect.x = SCREEN_WIDTH/2
-	#	self.rect.y = SCREEN_HEIGHT/2
 		self.angle = 1
 		self.frames = 0
+
 
 	def update(self):
 		cannon.shoot_ability = False
 		self.frames += 1
-		if self.frames < 80:
+		if self.frames < 40:
 			self.image = pygame.image.load("images\\reload\\reload"+str(self.costume)+".png")
 			self.image = pygame.transform.scale(self.image, (int(self.size[0]*0.05),int(self.size[1]*0.05)))
-			print(self.costume)
 			if self.costume < 11:
 				self.costume += 1
 			else:
@@ -97,7 +84,8 @@ class Reload(pygame.sprite.Sprite):
 		else:
 			cannon.shoot_ability = True
 			self.kill()
-		#pygame.display.flip()
+
+
 
 class Cannon(pygame.sprite.Sprite):
 	def __init__(self):
@@ -117,8 +105,8 @@ class Cannon(pygame.sprite.Sprite):
 		self.time1 = pygame.time.get_ticks()
 		self.shoot_ability = True
 
-	def update(self, multiplier, change_angle):
 
+	def update(self, multiplier, change_angle):
 		if change_angle == True:
 			self.angle += 5 * multiplier
 		if self.start_animation == True:
@@ -179,8 +167,10 @@ class Bird(pygame.sprite.Sprite):
 		col = pygame.sprite.spritecollide(self,core_gp,False,collided = None)
 		if col:
 			cannon.bullets += random.randint(0,2)
+			splat_sound.play()
 			self.kill()
 			cannon.score +=1
+
 
 
 class Core(pygame.sprite.Sprite):
@@ -204,25 +194,21 @@ class Core(pygame.sprite.Sprite):
 			self.kill()
 
 
-pygame.KEYDOWN and pygame.KEYUP
-
-
 
 clouds_gp = pygame.sprite.Group()
 cannon_gp = pygame.sprite.Group()
 birds_gp = pygame.sprite.Group()
 core_gp = pygame.sprite.Group()
-bar_gp = pygame.sprite.Group()
 reload_gp = pygame.sprite.Group()
 
 cannon = Cannon()
 cannon_gp.add(cannon)
 key_release = 0
 frame = 0
-bar = Bar()
-bar_gp.add(bar)
-while True:
+pygame.mixer.music.play(-1)
 
+
+while True:
 	clock.tick(FPS)
 	frame += 1
 	gameDisplay.blit(background,(0,0))
@@ -238,24 +224,16 @@ while True:
 				cannon.update(1, True)
 				angle -= 2
 			if event.key == pygame.K_SPACE:
-
-
-				loadingbar_countdown_start = pygame.time.get_ticks() #starting timer for power loading bar
-				bar_gp.update(loadingbar_countdown_start,False)
 				if key_release==0:
 					when_pressed = frame
 					key_release = 1
 
 		if event.type == pygame.KEYUP:
-
 			if event.key == pygame.K_SPACE:
 				key_release = 0
 				when_released = frame
 				frames_passed = when_released - when_pressed
-				bar_gp.update(0,True)
 				gravity_strength = (frames_passed/3) *-1
-				#for every 30 frame:
-				#	gravity_strength += increase
 				if cannon.shoot_ability == True:
 					reload = Reload()
 					reload_gp.add(reload)
@@ -263,6 +241,7 @@ while True:
 					core = Core(gravity_strength, angle)
 					core_gp.add(core)
 					cannon.start_animation = True
+					cannon_sound.play()
 
 	gen = random.randint(1,1000)
 	if gen < 3:
@@ -274,6 +253,10 @@ while True:
 		birds_gp.add(birds)
 
 	if cannon.bullets < 1:
+		if say == True:
+			speak = wincl.Dispatch("SAPI.SpVoice")
+			speak.Speak("Game Over, you have scored "+str(cannon.score)+ " points")
+			say = False
 		drawtext("GAME OVER", SCREEN_WIDTH/2 - 175, SCREEN_HEIGHT/2 - 55, white, 70)
 		drawtext('score: '+str(cannon.score), SCREEN_WIDTH/2, SCREEN_HEIGHT - 50, red, 30)
 		for birds in birds_gp:
@@ -287,18 +270,12 @@ while True:
 		core_gp.update()
 		reload_gp.update()
 		cannon_gp.update(1, False)
-		#bar_gp.update(0,False)
-
 		drawtext('score: '+str(cannon.score), 50, SCREEN_HEIGHT - 50, red, 30)
 		drawtext('bullets left: '+str(cannon.bullets), 200, SCREEN_HEIGHT - 50, red, 30)
 		clouds_gp.draw(gameDisplay)
 		core_gp.draw(gameDisplay)
 		cannon_gp.draw(gameDisplay)
 		birds_gp.draw(gameDisplay)
-		#bar_gp.draw(gameDisplay)
 		reload_gp.draw(gameDisplay)
 
 	pygame.display.update()
-
-#	https://www.remove.bg/
-#https://ezgif.com/split
