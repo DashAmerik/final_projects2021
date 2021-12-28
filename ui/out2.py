@@ -56,7 +56,7 @@ class Ui_MainWindow(object):
 
     def pr(self):
         your_text = self.lineEdit.text()
-        self.textEdit.setPlainText("Hello ")
+        self.textEdit.setPlainText("Hello " + your_text )
 
     def get_current_time(self):
         now = datetime.now().time()
